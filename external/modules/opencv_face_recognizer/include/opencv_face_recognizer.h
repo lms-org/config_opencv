@@ -17,7 +17,7 @@ public:
 private:
     const lms::ModuleConfig* config;
     cv::Ptr<cv::face::FaceRecognizer> model;
-    const cv_utils::ImageWithFaces *iFaces;
+    lms::ReadDataChannel<cv_utils::ImageWithFaces> iFaces;
     void train();
     void read_csv(const std::string& filename, std::vector<cv::Mat>& images, std::vector<int>& labels, char separator = ';');
     cv::Mat prepareImage(const cv::Mat& input);

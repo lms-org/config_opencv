@@ -13,10 +13,9 @@ public:
     bool deinitialize();
     bool cycle();
 private:
-    const lms::ModuleConfig *config;
     //Datachannels
-    const lms::imaging::Image* image;
-    cv_utils::ImageWithBlobs* iBlobs;
+    lms::ReadDataChannel<lms::imaging::Image> image;
+    lms::WriteDataChannel<cv_utils::ImageWithBlobs> iBlobs;
     //detector
     cv::Ptr<cv::SimpleBlobDetector> detector;
 };

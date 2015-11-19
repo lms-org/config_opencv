@@ -14,7 +14,7 @@ public:
     bool cycle();
 
 private:
-    const cv_utils::ImageWithFaces *iFaces;
+    lms::ReadDataChannel<cv_utils::ImageWithFaces> iFaces;
     int facesSaved;
 };
 

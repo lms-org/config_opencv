@@ -15,10 +15,8 @@ std::string window_name = "Capture - Face detection";
 namespace lms_opencv {
 
 bool FaceDetector::initialize(){
-    config = getConfig();
     input = datamanager()->readChannel<lms::imaging::Image>(this,"IMAGE");
     iFaces = datamanager()->writeChannel<cv_utils::ImageWithFaces>(this,"FACES");
-    iFaces->image = input;
     std::string configDir = lms::Framework::configsDirectory;
     if( !face_cascade.load(configDir+"/"+ face_cascade_name ) ){ printf("--(!)Error loading face cascade\n"); return false; };
     if( !eyes_cascade.load(configDir+"/"+ eyes_cascade_name ) ){ printf("--(!)Error loading eyes cascade\n"); return false; };
@@ -30,6 +28,10 @@ bool FaceDetector::deinitialize() {
 }
 
 bool FaceDetector::cycle () {
+
+    //Set the image of the face, the image might only be valid for one cycle!
+    iFaces->image = input.get();
+
     cv::Mat frame = input->convertToOpenCVMat();
     //TODO convert image to opencv image
     if( frame.empty() ){
@@ -40,7 +42,7 @@ bool FaceDetector::cycle () {
         detect(frame);
 
         //TODO render function
-        if(config->get<bool>("detectEyes",false)){
+        if(config().get<bool>("detectEyes",false)){
             displayImage(frame);
         }
     }
@@ -70,7 +72,7 @@ void FaceDetector::detect( cv::Mat frame ){
     face_cascade.detectMultiScale( frame, faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
 
     //TODO also toggles rendering
-    if(config->get<bool>("detectEyes",false)){
+    if(config().get<bool>("detectEyes",false)){
         for ( size_t i = 0; i < faces.size(); i++ ){
             Point center( faces[i].x + faces[i].width/2, faces[i].y + faces[i].height/2 );
             ellipse( frame, center, Size( faces[i].width/2, faces[i].height/2 ), 0, 0, 360, Scalar( 255, 0, 255 ), 4, 8, 0 );

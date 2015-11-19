@@ -12,8 +12,8 @@ public:
     bool deinitialize();
     bool cycle();
 private:
-    const cv_utils::ImageWithFaces *iFaces;
-    lms::target::Target *target;
+    lms::ReadDataChannel<cv_utils::ImageWithFaces> iFaces;
+    lms::WriteDataChannel<lms::target::Target> target;
 };
 
 #endif // OPENCV_FACE_TO_TARGET_H

@@ -24,10 +24,8 @@ public:
     bool cycle();
 
 private:
-    const lms::ModuleConfig* config;
-
-    const lms::imaging::Image *input;
-    cv_utils::ImageWithFaces *iFaces;
+    lms::ReadDataChannel<lms::imaging::Image> input;
+    lms::WriteDataChannel<cv_utils::ImageWithFaces> iFaces;
 
 
     void detect( cv::Mat frame );

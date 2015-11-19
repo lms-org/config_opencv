@@ -1,9 +1,6 @@
 #include "opencv_blob_detector.h"
 #include <vector>
 bool OpencvBlobDetector::initialize() {
-    //get the default config
-    config = getConfig();
-
     image = datamanager()->readChannel<lms::imaging::Image>(this,"IMAGE");
     iBlobs = datamanager()->writeChannel<cv_utils::ImageWithBlobs>(this,"BLOBS");
     // Setup SimpleBlobDetector parameters.
@@ -47,25 +44,25 @@ bool OpencvBlobDetector::cycle() {
     cv::Mat toSearch;
     //filter image by color
     //currently the image is BRGA!
-    if(config->get<bool>("filterColor")){
+    if(config().get<bool>("filterColor")){
         //TODO add filter like http://opencv-srf.blogspot.de/2010/09/object-detection-using-color-seperation.html
         if(image->format() == lms::imaging::Format::BGRA || image->format() == lms::imaging::Format::RGB){
-            int redMax = config->get<int>("redMax",255);
-            int greenMax = config->get<int>("greenMax",255);
-            int blueMax = config->get<int>("blueMax",255);
+            int redMax = config().get<int>("redMax",255);
+            int greenMax = config().get<int>("greenMax",255);
+            int blueMax = config().get<int>("blueMax",255);
 
-            int redMin = config->get<int>("redMin",0);
-            int greenMin = config->get<int>("greenMin",0);
-            int blueMin = config->get<int>("blueMin",0);
+            int redMin = config().get<int>("redMin",0);
+            int greenMin = config().get<int>("greenMin",0);
+            int blueMin = config().get<int>("blueMin",0);
             if(image->format() == lms::imaging::Format::BGRA){
-                int alphaMax = config->get<int>("alphaMax",255);
-                int alphaMin = config->get<int>("alphaMin",0);
+                int alphaMax = config().get<int>("alphaMax",255);
+                int alphaMin = config().get<int>("alphaMin",0);
                 cv::inRange(image->convertToOpenCVMat(),cv::Scalar(blueMin,greenMin,redMin,alphaMin),cv::Scalar(blueMax,greenMax,redMax,alphaMax),toSearch);
             }else{
                 cv::inRange(image->convertToOpenCVMat(),cv::Scalar(redMin,greenMin,blueMin),cv::Scalar(redMax,greenMax,blueMax),toSearch);
             }
         }else if(image->format() == lms::imaging::Format::GREY){
-            cv::inRange(image->convertToOpenCVMat(),cv::Scalar(config->get<int>("greyMin",0)),cv::Scalar(config->get<int>("greyMax",0)),toSearch);
+            cv::inRange(image->convertToOpenCVMat(),cv::Scalar(config().get<int>("greyMin",0)),cv::Scalar(config().get<int>("greyMax",0)),toSearch);
         }
     }else{
         toSearch = image->convertToOpenCVMat();
